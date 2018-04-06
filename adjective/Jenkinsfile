@@ -35,7 +35,15 @@ node (''){
 def podLabel = "mvn-with-cache-${env.MODULE}-${env.BUILD_NUMBER}"
 
 podTemplate(label: podLabel, cloud: 'openshift', inheritFrom: 'jenkins-slave-mvn', volumes: [
-        persistentVolumeClaim(claimName: 'mvn-cache-pv', mountPath: '/home/jenkins/.m2')
+    persistentVolumeClaim(claimName: 'mvn-cache-pv', mountPath: '/home/jenkins/.m2')
+], containers: [
+    containerTemplate(
+        name: 'jenkins-slave-mvn',
+        image: 'jenkins-slave-mvn',
+        envVars: [
+            secretEnvVar(key: 'TESTSECRET', secretKey: 'testsecret', secretName: 'testsecret')
+        ]
+    )
 ]) {
 
     /**
@@ -46,6 +54,7 @@ podTemplate(label: podLabel, cloud: 'openshift', inheritFrom: 'jenkins-slave-mvn
 
         stage('SCM Checkout') {
             checkout scm
+            echo "Secret value is: ${env.TESTSECRET}"
         }
 
         dir("${env.MODULE}") {
