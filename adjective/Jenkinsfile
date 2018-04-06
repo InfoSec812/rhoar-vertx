@@ -43,7 +43,7 @@ podTemplate(label: podLabel, cloud: 'openshift', inheritFrom: 'jenkins-slave-mvn
 ], containers: [
     containerTemplate(
         name: 'jenkins-slave-mvn',
-        image: "rhoar-vertx-ci-cd/jenkins-slave-mvn",
+        image: "docker-registry.default.svc:5000/rhoar-vertx-ci-cd/jenkins-slave-mvn",
         envVars: [
             secretEnvVar(key: 'TESTSECRET', secretKey: 'testsecret', secretName: 'testsecret')
         ]
